@@ -17,11 +17,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173") // <--- THIS WAS MISSING
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
-    private final UserRepository userRepository; // <--- 1. Inject the User Repo
+    private final UserRepository userRepository;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
@@ -34,11 +35,9 @@ public class AuthController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String jwt = jwtUtils.generateToken(userDetails);
 
-        // 2. Find the User ID in the database
-        // Inside /login method
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow();
-        return ResponseEntity.ok(new JwtResponse(jwt, user.getId())); // <--- PASS THE ID HERE
 
-
+        // Return token, ID, and Role
+        return ResponseEntity.ok(new JwtResponse(jwt, user.getId(), user.getRole()));
     }
 }

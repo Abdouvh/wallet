@@ -1,22 +1,23 @@
 import { useState } from 'react';
 import api from '../services/api';
-import { useNavigate } from 'react-router-dom';
+// FIXED: Combined imports into a single line
+import { useNavigate, Link } from 'react-router-dom'; 
 import { User, Lock, ArrowRight, Loader2, Wallet } from 'lucide-react';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(false); // New loading state
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
-        setIsLoading(true); // Start loading
+        setIsLoading(true);
         
         try {
-            // Artificial delay to show off the loading state (remove in production if you want)
+            // Optional delay for effect
             await new Promise(resolve => setTimeout(resolve, 800));
 
             const response = await api.post('/auth/login', {
@@ -41,7 +42,7 @@ const Login = () => {
             console.error("Login failed", err);
             setError(err.response?.data?.message || 'Invalid credentials. Please try again.');
         } finally {
-            setIsLoading(false); // Stop loading
+            setIsLoading(false);
         }
     };
 
@@ -149,9 +150,9 @@ const Login = () => {
                     <div className="mt-8 text-center">
                         <p className="text-sm text-gray-500">
                             Don't have an account?{' '}
-                            <a href="#" className="font-medium text-blue-600 hover:text-blue-500 transition-colors">
+                            <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500 transition-colors">
                                 Create account
-                            </a>
+                            </Link>
                         </p>
                     </div>
                 </div>
