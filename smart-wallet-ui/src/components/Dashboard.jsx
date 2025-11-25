@@ -697,7 +697,7 @@ const Dashboard = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 pb-12">
-            <nav className="bg-white border-b border-gray-200 sticky top-0 z-10">
+            <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex items-center gap-8">
@@ -719,7 +719,6 @@ const Dashboard = () => {
                                 ) : (
                                     <>
                                         <button onClick={() => setActiveTab('overview')} className={`flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${activeTab === 'overview' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50'}`}><Home className="w-4 h-4" /> Overview</button>
-                                        <button onClick={() => setActiveTab('activity')} className={`flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${activeTab === 'activity' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50'}`}><History className="w-4 h-4" /> Activity</button>
                                         <button onClick={() => setActiveTab('requests')} className={`flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${activeTab === 'requests' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50'}`}><Bell className="w-4 h-4" /> Requests</button>
                                         <button onClick={() => setActiveTab('contacts')} className={`flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${activeTab === 'contacts' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50'}`}><Users className="w-4 h-4" /> Contacts</button>
                                         <button onClick={() => setActiveTab('settings')} className={`flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${activeTab === 'settings' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50'}`}><Settings className="w-4 h-4" /> Settings</button>
@@ -739,7 +738,7 @@ const Dashboard = () => {
                 </div>
             </nav>
 
-            <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-0"> 
                 {isAdmin ? (
                     <>
                         {activeTab === 'admin_users' && <AdminUsersTab />}
@@ -748,7 +747,6 @@ const Dashboard = () => {
                 ) : (
                     <>
                         {activeTab === 'overview' && <OverviewTab account={account} transactions={transactions} setActiveModal={setActiveModal} handleTransfer={handleTransfer} recipientId={recipientId} setRecipientId={setRecipientId} amount={amount} setAmount={setAmount} isProcessing={isProcessing} />}
-                        {activeTab === 'activity' && <ActivityTab transactions={transactions} account={account} filterType={filterType} setFilterType={setFilterType} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />}
                         {activeTab === 'requests' && <RequestsTab userId={userId} refreshData={fetchData} />}
                         {activeTab === 'contacts' && <ContactsTab userId={userId} onSelectContact={handleContactSelect} />}
                         {activeTab === 'settings' && <SettingsTab account={account} refreshData={fetchData} />}
@@ -756,7 +754,9 @@ const Dashboard = () => {
                 )}
             </main>
 
+            {/* Deposit/Withdraw Modal */}
             <Modal isOpen={!!activeModal} onClose={() => setActiveModal(null)} title={activeModal === 'deposit' ? 'Deposit Funds' : 'Withdraw Funds'}>
+                {/* ... (Modal content remains the same) */}
                 <form onSubmit={handleModalSubmit} className="space-y-4">
                     <div><label className="block text-sm font-medium text-gray-700 mb-1">Amount</label><div className="relative"><div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><DollarSign className="h-5 w-5 text-gray-400" /></div><input type="number" autoFocus step="0.01" min="0.01" className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="0.00" value={modalAmount} onChange={(e) => setModalAmount(e.target.value)} required /></div></div>
                     <div className="flex gap-3 pt-2"><button type="button" onClick={() => setActiveModal(null)} className="flex-1 py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-xl">Cancel</button><button type="submit" disabled={isProcessing} className={`flex-1 py-3 px-4 text-white font-bold rounded-xl flex items-center justify-center gap-2 ${activeModal === 'deposit' ? 'bg-green-600' : 'bg-red-600'}`}>{isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : <>{activeModal === 'deposit' ? 'Confirm' : 'Confirm'}</>}</button></div>
